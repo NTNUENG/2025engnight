@@ -1,0 +1,83 @@
+/* Carousel Styling */
+.carousel {
+    position: relative;
+    width: 100%;
+    max-width: max(50dvw, 735px);
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: var(--gap-half);
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+    min-width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.carousel-item img {
+    width: 100%;
+}
+
+/* Carousel Controls */
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    background-color: rgba(var(--bg-rgb), 0.5);
+    transform: translateY(-50%);
+    color: var(--color);
+    padding: var(--gap-half);
+    border: none;
+    cursor: pointer;
+    border-radius: var(--gap-half);
+    z-index: 2;
+}
+
+.carousel-control-prev {
+    left: var(--gap-half);
+}
+
+.carousel-control-next {
+    right: var(--gap-half);
+}
+
+/* Indicators */
+.carousel-indicators {
+    position: absolute;
+    bottom: var(--gap-half);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: var(--gap-quarter);
+}
+
+.carousel-indicators button {
+    background-color: var(--border-half);
+    border: none;
+    width: 0.8em;
+    height: 0.8em;
+    margin: 0;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.carousel-indicators button.active {
+    background-color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .carousel-caption h5 {
+        font-size: 1.2em;
+    }
+
+    .carousel-caption p {
+        font-size: 0.8em;
+    }
+}
