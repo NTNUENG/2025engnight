@@ -1,7 +1,7 @@
 .sponsor-wall {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 30px;
+    gap: var(--gap);
     justify-items: center;
 }
 
@@ -12,15 +12,21 @@
 .sponsor img {
     width: 100%;
     height: auto;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
+    border-radius: var(--gap-half);
+    transition: transform 0.2s ease-in-out;
 }
 
 .sponsor img:hover {
-    transform: scale(1.1);
+    transform: scale(1.07);
 }
 
 .sponsor a {
     display: block;
     text-decoration: none;
+}
+
+@media only screen and (max-width: 600px) {
+    .sponsor-wall {
+        grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+    }
 }
