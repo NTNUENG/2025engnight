@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>購票系統｜國立臺灣師範大學 117 級英語學系之 2025 英語之夜</title>
     <meta name="description" content="購票系統｜國立臺灣師範大學 117 級英語學系之 2025 英語之夜">
+    <link rel="icon" type="image/x-icon" href="/image/favicon.ico">
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/style.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/mandarinSupport.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/snackbar/stylesheet.css" />
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/modal/stylesheet.css">
     <link rel="stylesheet" href="carousel/style.css">
     <link rel="stylesheet" href="sponsor/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js" crossorigin="anonymous"></script>
@@ -41,6 +43,16 @@
             min-height: calc(100dvh - var(--nav-height));
         }
 
+        .gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(157deg, rgba(144, 74, 75, 0.45) 0%, rgba(232, 214, 213, 0.3) 45%, rgba(252, 234, 233, 0.2) 70%, rgba(255, 248, 247, 0) 100%);
+        }
+
         .banner {
             max-height: 30dvw;
             max-width: 100dvw;
@@ -67,17 +79,23 @@
             border-color: var(--danger);
         }
 
-        .login input,
         form input {
             padding: var(--gap-half);
             width: 100%;
             font-family: var(--mono-font);
         }
 
-        .login .panel,
         form {
             margin: auto;
             max-width: max(30dvw, 20em);
+        }
+
+        #form,
+        #reciept {
+            background-image: url(image/watermark_transparent.png);
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .btn {
@@ -152,29 +170,180 @@
             padding-top: var(--gap-twice) !important;
             padding-bottom: var(--gap-twice) !important;
         }
+
+        sub {
+            vertical-align: baseline;
+            font-size: 70%;
+        }
+
+        ol li {
+            margin-bottom: 1em;
+        }
+
+        ol li p {
+            margin-top: 0;
+            margin-bottom: 0.5em;
+        }
+
+        .modal-active {
+            display: flex;
+        }
     </style>
     <script src="includes/brain.js"></script>
+    <script src="modal/script.js"></script>
 </head>
 
 <body>
-    <div class="huayhuay"></div>
-
     <nav id="nav-placeholder">
         <div class="nav">
             <div class="overlay"></div>
             <div class="title">
                 <span id="navTitle" style="opacity: 1; padding-left: var(--nav-margin);">國立臺灣師範大學<span class="hanLat">117</span>級英語學系之<span class="hanLat">2025</span>英語之夜購票系統</span>
                 <div class="right">
-                    <a id="navLangSwitch" class="twemoji" href="https://www.instagram.com/ntnueng2024" target="_blank" draggable="false">
+                    <a class="twemoji" onclick="openModal('qrcode')">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M7.03.084c-1.277.06-2.149.264-2.91.563a5.9 5.9 0 0 0-2.124 1.388 5.9 5.9 0 0 0-1.38 2.127C.321 4.926.12 5.8.064 7.076s-.069 1.688-.063 4.947.021 3.667.083 4.947c.061 1.277.264 2.149.563 2.911.308.789.72 1.457 1.388 2.123a5.9 5.9 0 0 0 2.129 1.38c.763.295 1.636.496 2.913.552 1.278.056 1.689.069 4.947.063s3.668-.021 4.947-.082c1.28-.06 2.147-.265 2.91-.563a5.9 5.9 0 0 0 2.123-1.388 5.9 5.9 0 0 0 1.38-2.129c.295-.763.496-1.636.551-2.912.056-1.28.07-1.69.063-4.948-.006-3.258-.02-3.667-.081-4.947-.06-1.28-.264-2.148-.564-2.911a5.9 5.9 0 0 0-1.387-2.123 5.86 5.86 0 0 0-2.128-1.38C19.074.322 18.202.12 16.924.066 15.647.009 15.236-.006 11.977 0S8.31.021 7.03.084m.14 21.693c-1.17-.05-1.805-.245-2.228-.408a3.7 3.7 0 0 1-1.382-.895 3.7 3.7 0 0 1-.9-1.378c-.165-.423-.363-1.058-.417-2.228-.06-1.264-.072-1.644-.08-4.848-.006-3.204.006-3.583.061-4.848.05-1.169.246-1.805.408-2.228.216-.561.477-.96.895-1.382a3.7 3.7 0 0 1 1.379-.9c.423-.165 1.057-.361 2.227-.417 1.265-.06 1.644-.072 4.848-.08 3.203-.006 3.583.006 4.85.062 1.168.05 1.804.244 2.227.408.56.216.96.475 1.382.895s.681.817.9 1.378c.165.422.362 1.056.417 2.227.06 1.265.074 1.645.08 4.848.005 3.203-.006 3.583-.061 4.848-.051 1.17-.245 1.805-.408 2.23-.216.56-.477.96-.896 1.38a3.7 3.7 0 0 1-1.378.9c-.422.165-1.058.362-2.226.418-1.266.06-1.645.072-4.85.079s-3.582-.006-4.848-.06m9.783-16.192a1.44 1.44 0 1 0 1.437-1.442 1.44 1.44 0 0 0-1.437 1.442M5.839 12.012a6.161 6.161 0 1 0 12.323-.024 6.162 6.162 0 0 0-12.323.024M8 12.008A4 4 0 1 1 12.008 16 4 4 0 0 1 8 12.008" />
+                            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08" />
                         </svg>
                     </a>
                 </div>
             </div>
         </div>
     </nav>
+    <div id="modal-qrcode" class="modal">
+        <div class="content show">
+            <div class="header">
+                <span class="close" onclick="closeModal()"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12 6.47 2 12 2m3.59 5L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"></path>
+                        </svg></span></span>
+                <h2><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M4 4h6v6H4zm16 0v6h-6V4zm-6 11h2v-2h-2v-2h2v2h2v-2h2v2h-2v2h2v3h-2v2h-2v-2h-3v2h-2v-4h3zm2 0v3h2v-3zM4 20v-6h6v6zM6 6v2h2V6zm10 0v2h2V6zM6 16v2h2v-2zm-2-5h2v2H4zm5 0h4v4h-2v-2H9zm2-5h2v4h-2zM2 2v4H0V2a2 2 0 0 1 2-2h4v2zm20-2a2 2 0 0 1 2 2v4h-2V2h-4V0zM2 18v4h4v2H2a2 2 0 0 1-2-2v-4zm20 4v-4h2v4a2 2 0 0 1-2 2h-4v-2z" />
+                        </svg></span>分享此系統</h2>
+            </div>
+            <div class="body">
+                <div style="display: flex; flex-direction: column;">
+                    <img src="image/share.svg" draggable="false" loading="lazy" style="margin: auto;max-width: 60dvw;max-height: 60dvh;">
+                    <p class="text-centre"><a class="inlineLink" href="https://ntnueng.github.io/2025engnight/"><code>https://ntnueng.github.io/2025engnight/</code></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-paidBenifits" class="modal">
+        <div class="content show">
+            <div class="header">
+                <span class="close" onclick="closeModal()"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12 6.47 2 12 2m3.59 5L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"></path>
+                        </svg></span></span>
+                <h2><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M20 2v2L4 8V6H2v12h2v-2l2 .5v2C6 20.4 7.6 22 9.5 22s3.5-1.6 3.5-3.5v-.2l7 1.7v2h2V2zm-9 16.5c0 .8-.7 1.5-1.5 1.5S8 19.3 8 18.5V17l3 .8z" />
+                        </svg></span>實體週抽獎優惠實施辦法</h2>
+            </div>
+            <div class="body">
+                <p class="text-centre"><a class="inlineLink" style="font-weight: 500;" onclick="icannotreadshit()">【我不想讀好多字】</a></p>
+                <h2>壹、抽獎時地</h2>
+                <section class="mar-b-2">
+                    <ol class="informal">
+                        <li>
+                            <p>日期</p>
+                            <p><span class="hanLat hl-r">114</span>年<span class="hanLat">4</span>月<span class="hanLat">14</span>至<span class="hanLat">18</span>日，即<q>實體週</q></p>
+                        </li>
+                        <li>
+                            <p>時間</p>
+                            <p>預計為當週每日<span class="hanLat">9</span>時<span class="hanLat">10</span>分至<span class="hanLat">18</span>時整；因學業為重，請依現場實際擺攤情況為準</p>
+                        </li>
+                        <li>
+                            <p>地點</p>
+                            <p>國立臺灣師範大學和平校區Ｉ誠正中庭走廊</p>
+                        </li>
+                    </ol>
+                </section>
+                <h2>貳、適用對象</h2>
+                <section class="mar-b-2">
+                    <ol class="informal">
+                        <li>
+                            <p>於抽獎優惠結束<sub>（<span class="hanLat">114</span>年<span class="hanLat">4</span>月<span class="hanLat">18</span>日）</sub>前以下列任一管道購票之人士：</p>
+                            <p>（一）本系統；</p>
+                            <p>（二）實體週攤位現場。</p>
+                        </li>
+                        <li>
+                            <p>滿足下列全部條件之人士：</p>
+                            <p>（一）本校<span class="hanLat">114</span>至<span class="hanLat">117</span>級英語學系生 ；</p>
+                            <p>（二）有繳納系費；</p>
+                            <p>（三）於抽獎優惠開始<sub>（<span class="hanLat">114</span>年<span class="hanLat">4</span>月<span class="hanLat">14</span>日）</sub>前以本系統購票。</p>
+                        </li>
+                    </ol>
+                </section>
+                <h2>參、抽獎機會</h2>
+                <section class="mar-b-2">
+                    <ol class="informal">
+                        <li>
+                            <p>符合條件貳之一者</p>
+                            <p>每購買<span class="hanLat">2</span>張票即享<span class="hanLat">1</span>次抽獎機會</p>
+                        </li>
+                        <li>
+                            <p>符合條件貳之二者</p>
+                            <p>購買幾張票即享幾次抽獎機會</p>
+                        </li>
+                    </ol>
+                </section>
+                <h2>肆、注意事項</h2>
+                <section class="mar-b-2">
+                    <ol class="informal">
+                        <li>
+                            <p>獎品即抽即取。</p>
+                        </li>
+                        <li>
+                            <p>系費繳交之有無以本系統之判定為準；倘有疑慮，請聯繫本系系學會總務股協助解決。</p>
+                        </li>
+                        <li>
+                            <p>若非為實體週開始前購票，儘管有繳納系費，仍不符合條件貳之二，故抽獎機會採以參之一。</p>
+                        </li>
+                        <li>
+                            <p>本活動由本活動總籌股負責，並擁有最終解釋權；倘文字理解礙難，歡迎至<q><a class="inlineLink" href="https://www.instagram.com/ntnueng2024" target="_blank" draggable="false">
+                                        <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                <path d="M7.03.084c-1.277.06-2.149.264-2.91.563a5.9 5.9 0 0 0-2.124 1.388 5.9 5.9 0 0 0-1.38 2.127C.321 4.926.12 5.8.064 7.076s-.069 1.688-.063 4.947.021 3.667.083 4.947c.061 1.277.264 2.149.563 2.911.308.789.72 1.457 1.388 2.123a5.9 5.9 0 0 0 2.129 1.38c.763.295 1.636.496 2.913.552 1.278.056 1.689.069 4.947.063s3.668-.021 4.947-.082c1.28-.06 2.147-.265 2.91-.563a5.9 5.9 0 0 0 2.123-1.388 5.9 5.9 0 0 0 1.38-2.129c.295-.763.496-1.636.551-2.912.056-1.28.07-1.69.063-4.948-.006-3.258-.02-3.667-.081-4.947-.06-1.28-.264-2.148-.564-2.911a5.9 5.9 0 0 0-1.387-2.123 5.86 5.86 0 0 0-2.128-1.38C19.074.322 18.202.12 16.924.066 15.647.009 15.236-.006 11.977 0S8.31.021 7.03.084m.14 21.693c-1.17-.05-1.805-.245-2.228-.408a3.7 3.7 0 0 1-1.382-.895 3.7 3.7 0 0 1-.9-1.378c-.165-.423-.363-1.058-.417-2.228-.06-1.264-.072-1.644-.08-4.848-.006-3.204.006-3.583.061-4.848.05-1.169.246-1.805.408-2.228.216-.561.477-.96.895-1.382a3.7 3.7 0 0 1 1.379-.9c.423-.165 1.057-.361 2.227-.417 1.265-.06 1.644-.072 4.848-.08 3.203-.006 3.583.006 4.85.062 1.168.05 1.804.244 2.227.408.56.216.96.475 1.382.895s.681.817.9 1.378c.165.422.362 1.056.417 2.227.06 1.265.074 1.645.08 4.848.005 3.203-.006 3.583-.061 4.848-.051 1.17-.245 1.805-.408 2.23-.216.56-.477.96-.896 1.38a3.7 3.7 0 0 1-1.378.9c-.422.165-1.058.362-2.226.418-1.266.06-1.645.072-4.85.079s-3.582-.006-4.848-.06m9.783-16.192a1.44 1.44 0 1 0 1.437-1.442 1.44 1.44 0 0 0-1.437 1.442M5.839 12.012a6.161 6.161 0 1 0 12.323-.024 6.162 6.162 0 0 0-12.323.024M8 12.008A4 4 0 1 1 12.008 16 4 4 0 0 1 8 12.008" />
+                                            </svg></span>本會官方<span class="hanLat">Instagram</span>帳號</a></q>主頁之匿名箱提問。</p>
+                        </li>
+                    </ol>
+                </section>
+                <h2 id="一言以蔽之">伍、話太多了看不懂</h2>
+                <section>
+                    <p>一言以蔽之，買<span class="hanLat">2</span>票可抽<span class="hanLat">1</span>次獎，但有繳系費的英語學系生若在抽獎開始前買票可享<span class="hanLat">1</span>票<span class="hanLat">1</span>抽，實體週開始後此特殊待遇旋即失效。</p>
+                </section>
+            </div>
+            <div class="footer">
+                <p class="text-centre">本辦法已經本活動總籌股於<span class="hanLat">114</span>年<span class="hanLat">4</span>月<span class="hanLat">4</span>日審覈通過，並將於預售週開始<sub>（<span class="hanLat">114</span>年<span class="hanLat">4</span>月<span class="hanLat">7</span>日）</sub>時生效。</p>
+            </div>
+        </div>
+    </div>
+    <div id="modal-submissionConfirmation" class="modal">
+        <div class="content show">
+            <div class="header">
+                <span class="close" onclick="closeModal()"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12 6.47 2 12 2m3.59 5L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"></path>
+                        </svg></span></span>
+                <h2><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M14 2H6c-1.11 0-2 .89-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm-1.46 17.37v-2h-4v-1.99h4v-2l3 3zM13 9V3.5L18.5 9z" />
+                        </svg></span>確定送出訂單？</h2>
+            </div>
+            <div class="body">
+                <div>
+                    <div class="row">
+                        <div class="item">
+                            <button class="btn btn-wide btn-danger" onclick="closeModal()">取消</button>
+                        </div>
+                        <div class="item">
+                            <button class="btn btn-wide btn-fill btn-success" onclick="confirmSubmitForm()">確定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p class="text-centre">訂單送出後即無法反悔。</p>
+            </div>
+        </div>
+    </div>
     <main>
+        <div class="gradient"></div>
         <div class="container">
             <h1 class="text-centre">2025<span class="hanLat">英語之夜</span>— BreakENG Free</h1>
             <div class="box rounded bordered mar-b-1">
@@ -201,19 +370,16 @@
                 <div class="detail-card">
                     <h2><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M20 2v2L4 8V6H2v12h2v-2l2 .5v2C6 20.4 7.6 22 9.5 22s3.5-1.6 3.5-3.5v-.2l7 1.7v2h2V2zm-9 16.5c0 .8-.7 1.5-1.5 1.5S8 19.3 8 18.5V17l3 .8z" />
-                            </svg></span>預售週優惠</h2>
+                            </svg></span>實體週抽獎</h2>
                     <hr>
-                    <p>預售週：<span class="hanLat hl-r">4</span>月<span class="hanLat">7</span>至<span class="hanLat">11</span>日</p>
-                    <p>實體週：<span class="hanLat hl-r">4</span>月<span class="hanLat">14</span>至<span class="hanLat">18</span>日</p>
-                    <p>每買<span class="hanLat" id="draw-threashold">2</span>張票<span class="hanLat">→</span>實體週攤位抽獎<span class="hanLat">1</span>次</p>
-                    <p id="paid-notice" class="display-none">（已解鎖系費生福利！）</p>
+                    <p>每<span class="hanLat" id="draw-threashold">2</span>張票<span class="hanLat">→</span>抽獎<span class="hanLat">1</span>次；有繳系費之英語學系生有更好的福利！<a class="inlineLink" style="font-weight: 500;" onclick="openModal('paidBenifits')">【瞭解更多】</a></p>
                 </div>
             </section>
             <section class="card mar-b-2">
                 <div class="title text-centre">
                     <h2><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                 <path d="m190.5 68.8 34.8 59.2H152c-22.1 0-40-17.9-40-40s17.9-40 40-40h2.2c14.9 0 28.8 7.9 36.3 20.8M64 88c0 14.4 3.5 28 9.6 40H32c-17.7 0-32 14.3-32 32v64c0 17.7 14.3 32 32 32h448c17.7 0 32-14.3 32-32v-64c0-17.7-14.3-32-32-32h-41.6c6.1-12 9.6-25.6 9.6-40 0-48.6-39.4-88-88-88h-2.2c-31.9 0-61.5 16.9-77.7 44.4L256 85.5l-24.1-41C215.7 16.9 186.1 0 154.2 0H152c-48.6 0-88 39.4-88 88m336 0c0 22.1-17.9 40-40 40h-73.3l34.8-59.2c7.6-12.9 21.4-20.8 36.3-20.8h2.2c22.1 0 40 17.9 40 40M32 288v176c0 26.5 21.5 48 48 48h144V288zm256 224h144c26.5 0 48-21.5 48-48V288H288z" />
-                            </svg></span>特別獎品</h2>
+                            </svg></span>活動特別獎品</h2>
                 </div>
                 <div class="body">
                     <p>參加<q><span class="hanLat hl-r">2025</span>英語之夜</q>當日抽獎活動即有機會將⋯⋯</p>
@@ -258,7 +424,7 @@
                             <div id="switch-student" class="btn btn-wide btn-fill" onclick="siwtchRole(true)">在校生</div>
                         </div>
                         <div class="item">
-                            <div id="switch-notStudent" class="btn btn-wide" onclick="siwtchRole(false)">校外人士</div>
+                            <div id="switch-notStudent" class="btn btn-wide" onclick="siwtchRole(false)">非在校生</div>
                         </div>
                     </div>
 
@@ -280,11 +446,11 @@
 
                         <div class="form-group">
                             <p class="smolTitle mar-b-0">級</p>
-                            <input id="1607664707" type="number" name="entry.1607664707" class="form-control" min="110" max="117" required>
+                            <input id="1607664707" placeholder="如：116" type="number" name="entry.1607664707" class="form-control" min="110" max="117" required>
                         </div>
 
                         <div class="form-group">
-                            <p class="smolTitle mar-b-0">購票數量（張）</p>
+                            <p class="smolTitle mar-b-0">購票數量<sub>（張）</sub></p>
                             <input id="810803947" type="number" name="entry.810803947" class="form-control" min="1" required>
                         </div>
 
@@ -292,9 +458,9 @@
                             <input id="511837988" type="text" name="entry.511837988" class="form-control" required>
                         </div>
 
-                        <div class="form-group">
-                            <p class="smolTitle mar-b-0">應付金額（新臺幣）</p>
-                            <input id="1799872179" type="number" name="entry.1799872179" class="form-control disabled" readonly>
+                        <div class="form-group" style="cursor: not-allowed;">
+                            <p class="smolTitle mar-b-0">應付金額<sub>（新臺幣）</sub></p>
+                            <input id="1799872179" type="number" name="entry.1799872179" class="form-control" style="pointer-events: none;" readonly>
                             <p class="mar-0" style="font-size: 0.6em; opacity: 80%;"><span class="hanLat hl-r">1</span>張<span class="hanLat">100</span>元，買<span class="hanLat">2</span>張折<span class="hanLat">10</span>元，買<span class="hanLat">3</span>張及以上折<span class="hanLat">30</span>元。</p>
                         </div>
                     </div>
@@ -309,7 +475,13 @@
                     <input type="hidden" name="fvv" value="1">
                     <input type="hidden" name="fbzx" value="-5031760803713873135">
                     <input type="hidden" name="pageHistory" value="0">
-                    <input class="btn btn-fill btn-success" type="submit" value="下單">
+                    <div class="btn btn-wide btn-fill btn-success" onclick="checkValidity()">下單</div>
+                    <p class="text-centre" style="font-weight: 500;"><a class="inlineLink" href="https://forms.gle/qUZoVD2T9wMRo6bi7" target="_blank" draggable="false"><span class="twemoji">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M20 17h2v-2h-2zm0-10v6h2V7M4 2c-1.11 0-2 .89-2 2v16c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V8l-6-6m-1 1.5L16.5 9H11Z" />
+                                </svg></span>遇到問題？
+                        </a></p>
+                    <!-- <input class="btn btn-fill btn-success" type="submit" value="下單"> -->
                 </form>
             </section>
             <section id="reciept" class="pad-tb-2 display-none">
@@ -342,7 +514,16 @@
                         </div>
                     </div>
                 </div>
-                <p class="text-centre">請記得於<b>實體週</b>（<span class="hanLat hl-r">4</span>月<span class="hanLat">14</span>至<span class="hanLat">18</span>日）時至位於誠正走廊的攤位領取票券。再次感謝支持本活動，期待共度美好時光！</p>
+                <p class="text-centre">請記得於<b>實體週</b><sub>（<span class="hanLat hl-r">4</span>月<span class="hanLat">14</span>至<span class="hanLat">18</span>日）</sub>時至位於<b>誠正走廊的攤位</b>領取票券。再次感謝支持本活動，期待共度美好時光！</p>
+                <p class="text-centre" style="font-weight: 500;"><a class="btn btn-secondary btn-fill" onclick="openModal('qrcode')"><span class="twemoji">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08" />
+                            </svg></span>分享此系統
+                    </a>　<a class="btn btn-secondary" href="https://forms.gle/qUZoVD2T9wMRo6bi7" target="_blank" draggable="false"><span class="twemoji">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                <path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H8.061l-2.574 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25v-8.5C0 1.784.784 1 1.75 1M1.5 2.75v8.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.75.75 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25m5.28 1.72a.75.75 0 0 1 0 1.06L5.31 7l1.47 1.47a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0m2.44 0a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 0 1-1.042-.018.75.75 0 0 1-.018-1.042L10.69 7 9.22 5.53a.75.75 0 0 1 0-1.06" />
+                            </svg></span>給予回饋
+                    </a></p>
             </section>
             <section class="sponsor-wall mar-t-3 mar-b-3" id="sponsor-wall">
             </section>
@@ -367,51 +548,39 @@
     <script src="carousel/script.js"></script>
     <script src="sponsor/script.js"></script>
     <script>
-        $('#bootstrapForm').submit(function (event) {
-            event.preventDefault();
+        // $('#bootstrapForm').submit(function (event) {
+        //     event.preventDefault();
 
-            var confirmed = confirm("確認送出訂單？");
+        //     var confirmed = confirm("確認送出訂單？");
 
-            if (confirmed) {
-                var extraData = {};
-                $('#bootstrapForm').ajaxSubmit({
-                    data: extraData,
-                    dataType: 'jsonp',
-                    error: successfullySent()
-                })
-            }
-        });
+        //     if (confirmed) {
+        //         var extraData = {};
+        //         $('#bootstrapForm').ajaxSubmit({
+        //             data: extraData,
+        //             dataType: 'jsonp',
+        //             error: successfullySent()
+        //         })
+        //     }
+        // });
 
-        function siwtchRole(isStudent) {
-            const inputId = document.getElementById('652218046');
-            const inputDepartment = document.getElementById('1462645903');
-            const inputYear = document.getElementById('1607664707');
+        function icannotreadshit() {
+            document.getElementById("一言以蔽之").scrollIntoView({ behavior: "smooth" });
+        }
 
-            if (!isStudent) {
-                inputId.value = '---------';
-                inputDepartment.value = '-';
-                inputYear.setAttribute("min", "0");
-                inputYear.value = 0;
-            }
-            else {
-                inputId.value = '';
-                inputDepartment.value = '';
-                inputYear.setAttribute("min", "110");
-                inputYear.value = '';
-            }
-
-            inputId.parentElement.classList.toggle('display-none', !isStudent);
-            inputDepartment.parentElement.classList.toggle('display-none', !isStudent);
-            inputYear.parentElement.classList.toggle('display-none', !isStudent);
-
-            document.getElementById('para-id').parentElement.classList.toggle('display-none', !isStudent);
-            document.getElementById('para-department').parentElement.classList.toggle('display-none', !isStudent);
-
-            document.getElementById('switch-student').classList.toggle('btn-fill', isStudent);
-            document.getElementById('switch-notStudent').classList.toggle('btn-fill', !isStudent);
+        function confirmSubmitForm() {
+            var extraData = {};
+            $('#bootstrapForm').ajaxSubmit({
+                data: extraData,
+                dataType: 'jsonp',
+                error: successfullySent()
+            })
         }
 
         function successfullySent() {
+            closeModal();
+
+            const reciept = document.getElementById('reciept');
+
             const id = document.getElementById('652218046').value;
             const name = document.getElementById('1439887165').value;
             const department = document.getElementById('1462645903').value;
@@ -430,7 +599,8 @@
             document.getElementById('para-cost').innerHTML = `<span class="hanLat hl-r">${price}</span><span style="font-size: 1rem">元</span>`;
             document.getElementById('div-paidHsifay').classList.toggle('display-none', paid != '有')
 
-            document.getElementById('reciept').classList.remove('display-none');
+            reciept.classList.remove('display-none');
+            reciept.scrollIntoView();
         }
     </script>
 </body>

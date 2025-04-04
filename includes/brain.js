@@ -30,6 +30,12 @@ function showForm() {
 }
 
 function finishLoading(idData, paidData) {
+    const submitBtn = document.getElementById('btn-submission');
+
+    document.querySelectorAll('#form input').forEach(element => {
+        element.value = '';
+    })
+
     const inputId = document.getElementById('652218046');
     const inputName = document.getElementById('1439887165');
     const inputDepartment = document.getElementById('1462645903');
@@ -37,14 +43,11 @@ function finishLoading(idData, paidData) {
     const inputPaid = document.getElementById('511837988');
     const inputAmount = document.getElementById('810803947');
     const inputPrice = document.getElementById('1799872179');
-    
+
     const spanDrawThreashold = document.getElementById('draw-threashold');
     const alertPaidUser = document.getElementById('paid-alert');
-    const paraPaidUser = document.getElementById('paid-notice');
 
     inputId.addEventListener('input', function () {
-        inputDepartment.value = idData.includes(inputId.value) ? '英語學系' : '';
-
         const id = inputId.value;
 
         if (id.length >= 3) {
@@ -55,11 +58,22 @@ function finishLoading(idData, paidData) {
             inputYear.value = '';
         }
 
-        inputPaid.value = checkIfPaid(spanDrawThreashold, alertPaidUser, paraPaidUser);
+        inputPaid.value = checkIfPaid(spanDrawThreashold, alertPaidUser);
+
+        const ninthChar = id.charAt(8);
+        let checkedId;
+        if (!/^[a-zA-Z]$/.test(ninthChar)) {
+            checkedId = id.slice(0, 8);
+        } else {
+            checkedId = id.slice(0, 8) + ninthChar.toUpperCase();
+        }
+        inputId.value = checkedId;
+
+        inputDepartment.value = idData.includes(id.toUpperCase()) ? '英語學系' : '';
     });
 
     inputName.addEventListener('input', function () {
-        inputPaid.value = checkIfPaid(spanDrawThreashold, alertPaidUser, paraPaidUser);
+        inputPaid.value = checkIfPaid(spanDrawThreashold, alertPaidUser);
     });
 
     inputAmount.addEventListener('input', function () {
@@ -79,7 +93,7 @@ function finishLoading(idData, paidData) {
         }
     });
 
-    function checkIfPaid(spanDrawThreashold, alertPaidUser, paraPaidUser) {
+    function checkIfPaid(spanDrawThreashold, alertPaidUser) {
         const id = inputId.value;
         const name = inputName.value;
 
@@ -99,10 +113,62 @@ function finishLoading(idData, paidData) {
 
         spanDrawThreashold.textContent = threashold;
         alertPaidUser.classList.toggle('display-none', threashold == 2);
-        paraPaidUser.classList.toggle('display-none', threashold == 2);
 
         return hadPaid;
     }
 }
 
 window.addEventListener('load', initializePage);
+
+function siwtchRole(isStudent) {
+    const inputId = document.getElementById('652218046');
+    const inputDepartment = document.getElementById('1462645903');
+    const inputYear = document.getElementById('1607664707');
+
+    if (!isStudent) {
+        inputId.setAttribute("minlength", "0");
+        inputYear.setAttribute("min", "0");
+
+        inputId.value = '非在校生';
+        inputDepartment.value = '非在校生';
+        inputYear.value = 0;
+    }
+    else {
+        inputId.setAttribute("minlength", "9");
+        inputYear.setAttribute("min", "110");
+
+        inputId.value = '';
+        inputDepartment.value = '';
+        inputYear.value = '';
+    }
+
+    inputId.parentElement.classList.toggle('display-none', !isStudent);
+    inputDepartment.parentElement.classList.toggle('display-none', !isStudent);
+    inputYear.parentElement.classList.toggle('display-none', !isStudent);
+
+    document.getElementById('para-id').parentElement.classList.toggle('display-none', !isStudent);
+    document.getElementById('para-department').parentElement.classList.toggle('display-none', !isStudent);
+
+    document.getElementById('switch-student').classList.toggle('btn-fill', isStudent);
+    document.getElementById('switch-notStudent').classList.toggle('btn-fill', !isStudent);
+}
+
+function checkValidity() {
+    const allInputs = document.querySelectorAll('#form input');
+    let invalidInput = null;
+
+    for (let element of allInputs) {
+        element.value = element.value.trim();
+
+        if (!element.checkValidity()) {
+            invalidInput = element;
+            break;
+        }
+    }
+
+    if (invalidInput) {
+        invalidInput.reportValidity();
+    } else {
+        openModal('submissionConfirmation');
+    }
+}
