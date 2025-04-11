@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實體週購票存根系統｜國立臺灣師範大學 117 級英語學系之 2025 英語之夜</title>
+    <meta name="description" content="實體週購票存根系統僅國立臺灣師範大學 117 級英語學系之 2025 英語之夜工人（不含大三大四生）可使用之。">
+    <link rel="icon" type="image/x-icon" href="/image/favicon.ico">
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/style.css" />
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/mandarinSupport.css" />
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/snackbar/stylesheet.css" />
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/modal/stylesheet.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg: #271d1d;
+            --bg-rgb: 255, 248, 247;
+            --bg-dark: #221919;
+            --color: #f0dede;
+            --title-color: #d7c1c1;
+            --card-bg: rgb(50, 40, 39);
+            --card-bg-rgb: 50, 40, 39;
+            --border: #a08c8c;
+            --border-half: #a08c8c80;
+            --primary: #ffb3b2;
+            --secondary: #e6bdbc;
+            --teritary: #e5c18d;
+        }
+
+        fieldset {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            min-height: 100dvh;
+        }
+
+        input {
+            color: var(--color);
+        }
+
+        input:invalid {
+            border-color: var(--danger);
+        }
+
+        form input {
+            padding: var(--gap-half);
+            width: 100%;
+            font-family: var(--mono-font);
+        }
+
+        form {
+            margin: auto;
+            max-width: max(30dvw, 20em);
+        }
+
+        #form,
+        #reciept {
+            background-image: url(image/watermark_transparent.png);
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .btn {
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border 0.2s ease-in-out;
+        }
+
+        .hanLat:empty {
+            display: none;
+        }
+
+        .loader {
+            border: 16px solid var(--bg-dark);
+            border-top: 16px solid var(--primary);
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .flex-dynamic-direction {
+            flex-direction: row;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .flex-dynamic-direction {
+                flex-direction: column;
+            }
+        }
+
+        legend {
+            font-weight: 500;
+            margin-bottom: 0.5em;
+            margin-top: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="gradient"></div>
+        <div class="container">
+            <h1 class="text-centre"><span class="hanLat hl-r">2025</span>英語之夜實體週購票存根系統</h1>
+            <section class="mar-b-2">
+                <div class="alert alert-info" style="--alert-colour: 255, 179, 178">
+                    <div class="alert-icon"></div>
+                    <p class="alert-message">本系統僅允許本次活動之大一、二工人進行填寫。</p>
+                </div>
+            </section>
+            <form action="https://docs.google.com/forms/d/e/1FAIpQLSe6_OSj_EGGv4_DccWhlCKkjEkhRgjjxygHUwt4xdnDWLLG4Q/formResponse" target="_self" id="bootstrapForm" method="POST">
+                <!-- Field type: "short" id: "1532724054" -->
+                <fieldset>
+                    <legend for="1532724054">工人學號</legend>
+                    <div class="form-group">
+                        <input id="1771806550" type="text" name="entry.1771806550" pattern="41[2-3]21[1-2][0-9]{2}L" required>
+                    </div>
+                </fieldset>
+
+                <!-- Field type: "short" id: "957020910" -->
+                <fieldset>
+                    <legend for="957020910">工人華文姓名</legend>
+                    <div class="form-group">
+                        <input id="973015413" type="text" name="entry.973015413" required>
+                    </div>
+                </fieldset>
+
+                <!-- Field type: "short" id: "9576480" -->
+                <fieldset>
+                    <legend for="9576480">顧客末三碼</legend>
+                    <div class="form-group">
+                        <input id="364123990" type="text" name="entry.364123990" pattern="[0-9][0-9][0-9]" required>
+                    </div>
+                </fieldset>
+
+                <!-- Field type: "short" id: "2001629101" -->
+                <fieldset>
+                    <legend for="2001629101">購買張數</legend>
+                    <div class="form-group">
+                        <input id="1039004342" type="number" name="entry.1039004342" min="1" required>
+                    </div>
+                </fieldset>
+
+                <!-- Field type: "short" id: "1028669504" -->
+                <fieldset style="cursor: not-allowed;">
+                    <legend for="1028669504">總金額</legend>
+                    <div class="form-group">
+                        <input id="1509187343" type="number" name="entry.1509187343" style="pointer-events: none;" readonly>
+                    </div>
+                </fieldset>
+
+                <input type="hidden" name="fvv" value="1">
+                <input type="hidden" name="fbzx" value="987981644513059151">
+                <!--
+        CAVEAT: In multipages (multisection) forms, *pageHistory* field tells to google what sections we've currently completed.
+        This usually starts as "0" for the first page, then "0,1" in the second page... up to "0,1,2..N" in n-th page.
+        Keep this in mind if you plan to change this code to recreate any sort of multipage-feature in your exported form.
+        We're setting this to the total number of pages in this form because we're sending all fields from all the section together.
+    -->
+                <input type="hidden" name="pageHistory" value="0">
+
+                <input class="btn btn-fill btn-success mar-t-1" type="submit" value="Submit">
+            </form>
+        </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha256-2Pjr1OlpZMY6qesJM68t2v39t+lMLvxwpa8QlRjJroA=" crossorigin="anonymous"></script>
+    <script>
+        $('#bootstrapForm').submit(function (event) {
+            event.preventDefault();
+
+            var confirmed = confirm("確認送出訂單？");
+
+            if (confirmed) {
+                var extraData = {};
+                $('#bootstrapForm').ajaxSubmit({
+                    data: extraData,
+                    dataType: 'jsonp',
+                    error: successfullySent()
+                })
+            }
+        });
+
+        function successfullySent() {
+            const inputIds = ['364123990', '1039004342', '1509187343'];
+
+            inputIds.forEach(id => {
+                document.getElementById(id).value = null;
+            });
+        }
+
+        const inputId = document.getElementById('1771806550');
+        const inputName = document.getElementById('973015413');
+        const inputTelephone = document.getElementById('364123990');
+        const inputAmount = document.getElementById('1039004342');
+        const inputPrice = document.getElementById('1509187343');
+
+        inputId.addEventListener('input', function () {
+            const id = inputId.value;
+            inputId.value = id.toUpperCase();
+        });
+
+        inputName.addEventListener('input', function () {
+        });
+
+        inputAmount.addEventListener('input', function () {
+            const amount = inputAmount.value;
+
+            if (amount == 1) {
+                inputPrice.value = 100;
+            }
+            else if (amount == 2) {
+                inputPrice.value = 190;
+            }
+            else if (amount >= 3) {
+                inputPrice.value = amount * 100 - 30;
+            }
+            else {
+                inputPrice.value = '';
+            }
+        });
+
+        function checkIfPaid(spanDrawThreashold, alertPaidUser) {
+            const id = inputId.value;
+            const name = inputName.value;
+
+            let hadPaid = '無';
+            let threashold = 2;
+
+            if (id.length > 0 && name.length > 0) {
+                if (paidData.includes(id)) {
+                    hadPaid = '有';
+                    threashold = 1;
+                }
+                else if (paidData.includes(name)) {
+                    hadPaid = '有';
+                    threashold = 1;
+                }
+            }
+
+            spanDrawThreashold.textContent = threashold;
+            alertPaidUser.classList.toggle('display-none', threashold == 2);
+
+            return hadPaid;
+        }
+    </script>
+</body>
+
+</html>
