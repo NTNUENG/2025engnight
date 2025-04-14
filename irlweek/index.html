@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>實體週購票存根系統｜國立臺灣師範大學 117 級英語學系之 2025 英語之夜</title>
     <meta name="description" content="實體週購票存根系統僅國立臺灣師範大學 117 級英語學系之 2025 英語之夜工人（不含大三大四生）可使用之。">
-    <link rel="icon" type="image/x-icon" href="/image/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../image/favicon.ico">
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/style.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/mandarinSupport.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/snackbar/stylesheet.css" />
@@ -255,7 +255,7 @@
         }
 
         async function loadJson(name) {
-            const response = await fetch(`/includes/${name}.json`);
+            const response = await fetch(`../includes/${name}.json`);
             const data = await response.json();
             return data;
         }
