@@ -121,7 +121,7 @@
 
         .radio-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(calc(var(--gap) * 10), 1fr));
             gap: var(--gap-half);
             margin-top: var(--gap-half);
         }
@@ -176,6 +176,12 @@
             width: 1%;
             height: 1.5em;
             background-color: var(--primary);
+        }
+
+        @media only screen and (max-width: 600px) {
+            .flex-dynamic-direction {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -265,7 +271,7 @@
                 </div>
             </div>
             <div id="panelFlavour" class="panel display-none">
-                <div class="box rounded bordered" style="width: 60dvw;">
+                <div class="box rounded bordered" style="max-width: max(60dvw, 30em);">
                     <h2>口味選擇一</h2>
                     <p>店家要求每盒<span class="hanLat">10</span>顆，故無法彈性提供數量選擇，即一種口味<span class="hanLat">10</span>顆；每人最多<span class="hanLat">2</span>種口味，即<span class="hanLat">20</span>顆。但若選擇與朋友討論後進行混搭便可食用更多口味。</p>
                     <div id="guotiehs" class="radio-group"></div>
@@ -280,8 +286,9 @@
                 </div>
             </div>
             <div id="panelFlavour2" class="panel display-none">
-                <div class="box rounded bordered" style="width: 90dvw;">
+                <div class="box rounded bordered" style="max-width: max(60dvw, 30em);">
                     <h2>口味選擇二</h2>
+                    <p>第二種口味可不選。店家要求每盒<span class="hanLat">10</span>顆，故無法彈性提供數量選擇，即一種口味<span class="hanLat">10</span>顆；每人最多<span class="hanLat">2</span>種口味，即<span class="hanLat">20</span>顆。但若選擇與朋友討論後進行混搭便可食用更多口味。</p>
                     <div id="guotiehs2" class="radio-group"></div>
                     <div class="row mar-t-1">
                         <div class="item">
@@ -329,10 +336,10 @@
             </div>
         </div>
         <div id="warningParent" class="panel-container display-none">
-            <div class="panel" style="min-height: min-content;">
+            <div class="panel">
                 <div class="alert alert-warning">
                     <div class="alert-icon"></div>
-                    <p class="alert-message">由於<span class="hanLat">Google</span>的限制，資料將於<span class="hanLat">10</span>秒至<span class="hanLat">2</span>分鐘內更新<sub>（親測）</sub>。請不用擔心，亦不用重複填表。</p>
+                    <p class="alert-message">由於<span class="hanLat">Google</span>的限制，資料將於<span class="hanLat">10</span>秒至<span class="hanLat">2</span>分鐘內更新<sub>（親測）</sub>。請不用擔心，亦不用重複填表。<span id="timer" class="hanLat">01:00</span>秒後將強制重新整理。</p>
                 </div>
             </div>
         </div>
@@ -455,6 +462,22 @@
             closeModal();
             $('#panelParent').addClass('display-none');
             $('#warningParent').removeClass('display-none');
+
+            let totalTime = 60;
+            const timerDisplay = $('#timer');
+
+            function updateProgressBar() {
+                totalTime--;
+
+                timerDisplay.text(totalTime);
+
+                if (totalTime < 0) {
+                    clearInterval(countdown);
+                    location.reload(true);
+                }
+            }
+
+            let countdown = setInterval(updateProgressBar, 1000);
         }
 
         function next(id) {
