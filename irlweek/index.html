@@ -9,8 +9,6 @@
     <link rel="icon" type="image/x-icon" href="../image/favicon.ico">
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/style.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/mandarinSupport.css" />
-    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/snackbar/stylesheet.css" />
-    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/modal/stylesheet.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js" crossorigin="anonymous"></script>
     <style>
         :root {
@@ -26,6 +24,7 @@
             --primary: #ffb3b2;
             --secondary: #e6bdbc;
             --teritary: #e5c18d;
+            --nav-height: 0;
         }
 
         fieldset {
@@ -90,6 +89,10 @@
 
         .curser-pointer {
             cursor: pointer;
+        }
+
+        .sort-indicator {
+            margin-right: 0.5em;
         }
     </style>
 </head>
@@ -164,8 +167,8 @@
             </section>
 
         </div>
-        <div class="container">
-            <h2>存根系統後臺</h2>
+        <div id="divLog" class="container">
+            <h2 class="mar-t-0">存根系統後臺</h2>
             <p>為節省傳輸資源，後臺不採即時更新，請自行重新整理。惟礙於瀏覽器快取等影響，恐無法立即見效。若多次點擊仍無果，請嘗試<a class="inlineLink" onclick="location.reload()">【點擊這裡】</a>。</p>
             <div class="table-container mar-t-1">
                 <table id="csv-table"></table>
@@ -192,13 +195,12 @@
         function successfullySent() {
             const inputIds = ['364123990', '1039004342', '1509187343'];
 
-            inputIds.forEach(id => {
-                document.getElementById(id).value = null;
+            $.each(inputIds, function (_, id) {
+                $('#' + id).val(null);
             });
         }
 
         function finishLoading(workersData) {
-
             const inputId = document.getElementById('1771806550');
             const inputName = document.getElementById('973015413');
             const inputTelephone = document.getElementById('364123990');
@@ -276,11 +278,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
         buttonRefresh = document.getElementById('buttonRefresh');
-        buttonRefresh.addEventListener("click", refresh);
+        buttonRefresh.addEventListener("click", () => refresh(true));
 
-        function refresh() {
+        const table = document.getElementById('csv-table');
+
+        function refresh(scroll) {
             buttonRefresh.classList.add('display-none');
             buttonRefresh.disabled = true;
+
+            table.innerHTML = '';
 
             const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSMImGmL_HmIkrf7PBz07en26YHTPDzNffv9u1K-XBMPCav2rK4xkYvaXJhJCZHXaqMhcwfB9QATETE/pub?gid=583917275&single=true&output=csv";
 
@@ -303,9 +309,6 @@
                 });
 
             function generateTable(data) {
-                const table = document.getElementById('csv-table');
-                table.innerHTML = '';
-
                 if (data.length === 0) {
                     table.innerHTML = '<tr><td colspan="100%" class="text-centre">目前尚無資料</td></tr>';
 
@@ -325,10 +328,9 @@
                     if (header === "時間戳記") {
                         let indicator = document.createElement('span');
                         indicator.classList.add('sort-indicator');
-                        indicator.textContent = '▼';
                         th.append(indicator);
 
-                        th.innerHTML += " 年月日時分秒";
+                        th.innerHTML += "日時分秒";
                         th.classList.add('curser-pointer');
                         th.addEventListener("click", sortTable);
                     } else {
@@ -349,7 +351,7 @@
                         let td = document.createElement('td');
                         let cellValue = row[header] || '';
 
-                        if (header === "店員學號") {
+                        if (header === "工人學號") {
                             return;
                         }
                         else if (["總金額", "購買張數"].includes(header)) {
@@ -368,8 +370,16 @@
                     table.appendChild(tr);
                 });
 
+                const curOrder = table.getAttribute("data-sort-order");
+                table.setAttribute("data-sort-order", curOrder === "descending" ? "ascending" : "descending");
+
+                sortTable();
+
                 buttonRefresh.classList.remove('display-none');
                 buttonRefresh.disabled = false;
+
+                if (scroll)
+                    document.getElementById('divLog').scrollIntoView({ behavior: "smooth" });
             }
 
             function formatDate(dateString) {
@@ -390,19 +400,20 @@
                         hours = 0;
                     }
 
-                    return `${year}/${month}/${day} ${hours.toString().padStart(2, '0')}:${minutes}:${seconds}`;
+                    return `${day} ${hours.toString().padStart(2, '0')}:${minutes}:${seconds}`;
                 }
 
                 return dateString;
             }
         }
 
-        refresh();
+        refresh(false);
 
         function sortTable() {
-            const table = document.getElementById("csv-table");
             const rows = Array.from(table.rows).slice(1);
             const isAscending = table.getAttribute("data-sort-order") === "ascending";
+            const newOrder = isAscending ? "descending" : "ascending";
+            table.setAttribute("data-sort-order", newOrder);
 
             rows.sort((rowA, rowB) => {
                 const cellA = rowA.cells[0].innerText;
@@ -412,13 +423,10 @@
                     ? cellA.localeCompare(cellB)
                     : Number(cellA) - Number(cellB);
 
-                return isAscending ? comparison : -comparison;
+                return !isAscending ? comparison : -comparison;
             });
 
             rows.forEach(row => table.appendChild(row));
-
-            const newOrder = isAscending ? "descending" : "ascending";
-            table.setAttribute("data-sort-order", newOrder);
 
             const headers = table.querySelectorAll("th");
 
